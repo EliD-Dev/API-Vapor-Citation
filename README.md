@@ -102,23 +102,27 @@ swift run Run serve --auto-migrate
 Sur Windows, il est recommandé d'utiliser Docker pour éviter les problèmes de compilation avec SSL :
 
 ```powershell
-# Vérifier que Docker est installé
+# Vérifier que Docker et Docker Compose sont installés
 docker --version
+docker-compose --version
 
-# Construire l'image Docker
-docker build -t api-vapor-citation .
-
-# Lancer le container avec auto-migration
-docker run -d -p 8080:8080 --name vapor-api-citation api-vapor-citation serve --env production --hostname 0.0.0.0 --port 8080 --auto-migrate
+# Lancer tous les services avec Docker Compose
+docker-compose up -d
 
 # Vérifier les logs
-docker logs vapor-api-citation
+docker-compose logs taskapi
 
-# Arrêter le container
-docker stop vapor-api-citation
+# Suivre les logs en temps réel
+docker-compose logs -f taskapi
 
-# Redémarrer le container
-docker start vapor-api-citation
+# Arrêter tous les services
+docker-compose down
+
+# Redémarrer les services
+docker-compose restart
+
+# Reconstruire et relancer si des modifications ont été faites
+docker-compose up -d --build
 ```
 
 **Alternative avec compilation native (si Swift compile correctement) :**
@@ -144,13 +148,19 @@ swift run Run migrate --revert
 swift run Run migrate --dry-run
 ```
 
-**Windows (avec Docker) :**
+**Windows (avec Docker Compose) :**
 ```powershell
-# Exécuter les migrations dans un container temporaire
-docker run --rm api-vapor-citation migrate
+# Exécuter les migrations
+docker-compose exec taskapi ./Run migrate
 
-# Ou si le container est déjà en cours d'exécution
-docker exec vapor-api-citation ./Run migrate
+# Revenir en arrière (rollback)
+docker-compose exec taskapi ./Run migrate --revert
+
+# Voir le statut des migrations
+docker-compose exec taskapi ./Run migrate --dry-run
+
+# Alternative : exécuter dans un container temporaire
+docker-compose run --rm taskapi ./Run migrate
 ```
 
 **Windows (compilation native) :**
