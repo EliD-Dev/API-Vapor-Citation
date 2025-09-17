@@ -1,0 +1,87 @@
+# Docker Compose pour l'API de gestion des tâches
+# Ce fichier permet de lancer l'application avec ses dépendances
+
+version: '3.8'
+
+services:
+  # ===========================
+  # 🚀 Service principal : API Vapor
+  # ===========================
+  taskapi:
+    build: .
+    container_name: vapor-taskapi
+    ports:
+      - "8080:8080"
+    environment:
+      # Configuration de l'environnement
+      - LOG_LEVEL=info
+      # Si vous voulez utiliser PostgreSQL au lieu de SQLite
+      # - DATABASE_HOST=postgres
+      # - DATABASE_PORT=5432
+      # - DATABASE_USERNAME=vapor
+      # - DATABASE_PASSWORD=password
+      # - DATABASE_NAME=taskdb
+    volumes:
+      # Persistance de la base SQLite
+      - ./db:/app/db
+    depends_on:
+      - postgres
+    networks:
+      - vapor-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===========================
+  # 🗄️ Base de données PostgreSQL (optionnelle)
+  # ===========================
+  postgres:
+    image: postgres:15-alpine
+    container_name: vapor-postgres
+    environment:
+      POSTGRES_DB: taskdb
+      POSTGRES_USER: vapor
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - vapor-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vapor"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===========================
+  # 📊 Adminer - Interface d'administration de base de données
+  # ===========================
+  adminer:
+    image: adminer:latest
+    container_name: vapor-adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    networks:
+      - vapor-network
+    restart: unless-stopped
+
+# ===========================
+# 🌐 Configuration réseau
+# ===========================
+networks:
+  vapor-network:
+    driver: bridge
+
+# ===========================
+# 💾 Volumes persistants
+# ===========================
+volumes:
+  postgres_data:
+    driver: local
