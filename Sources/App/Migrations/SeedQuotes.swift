@@ -141,8 +141,11 @@ struct SeedQuotes: Migration {
                     Quote(text: "Continue même quand personne ne t’applaudit, conseille Sefer.", author: "Sefer"),
                     Quote(text: "Sefer dit que tes rêves méritent ta persévérance quotidienne.", author: "Sefer"),
                     Quote(text: "Ta volonté est l’arme la plus redoutable que tu possèdes, dit Sefer.", author: "Sefer"),
-                    Quote(text: "Sefer affirme que un 0-6 face à l'Espagne n'est pas la fin, mais un nouveau départ.", author: "Sefer"),
-                    Quote(text: "Sefer dit que fallait travailler Eliot c'est dommage.", author: "Sefer")
+                    Quote(text: "Sefer affirme que un 6-0 face à l'Espagne n'est pas la fin, mais un nouveau départ.", author: "Sefer"),
+                    Quote(text: "Sefer dit qu'il fallait travailler Eliot c'est dommage.", author: "Sefer"),
+                    Quote(text: "Ce n'est parce que Sefer est bienveillant qu'il faut être confiant.", author: "Med.CSS"),
+                    Quote(text: "La Turquie est un pays magnifique mais Sefer est encore plus magnifique.", author: "Sefer"),
+                    Quote(text: "Sefer a dit qu'il ne faut jamais perdre espoir en son équipe pour la Ligue des Champions, même si tout semble aller mal.", author: "Sefer")
                 ]
 
                 return initialQuotes.create(on: database)
