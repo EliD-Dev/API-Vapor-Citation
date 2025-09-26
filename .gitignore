@@ -1,11 +1,6 @@
 # Build artifacts
 /.build
-/Packages
-xcuserdata/
-DerivedData/
-.swiftpm/config/registries.json
-.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
-.netrc
+
 
 # SQLite database files
 *.sqlite
@@ -14,10 +9,6 @@ DerivedData/
 
 # macOS
 .DS_Store
-
-# Xcode
-*.xcodeproj
-*.xcworkspace
 
 # VS Code
 .vscode/
