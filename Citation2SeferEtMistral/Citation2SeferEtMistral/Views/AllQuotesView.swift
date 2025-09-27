@@ -123,16 +123,6 @@ struct QuoteRowView: View {
                 Image(systemName: "quote.opening")
                     .font(.headline)
                     .foregroundColor(.green.opacity(0.6))
-                
-                Spacer()
-                
-                Text("#\(quote.id)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(Color.green.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
             }
             
             Text(quote.text)

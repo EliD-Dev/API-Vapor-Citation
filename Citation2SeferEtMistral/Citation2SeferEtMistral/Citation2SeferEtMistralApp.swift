@@ -11,3 +11,4 @@ struct Citation2SeferEtMistralApp: App {
         }
     }
 }
+

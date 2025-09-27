@@ -32,13 +32,31 @@ class MistralService: ObservableObject {
     }
     
     private func createPrompt(theme: String) -> String {
-        let contextualPrompt = analyzeThemeContext(theme: theme)
-        
         return """
-        Créer une citation inspirante et motivante sur le thème : "\(theme)".
-        maximum 2 lignes, en français,
-        adapte toi au thème "\(theme)". pour être comme dans l'univers de ce thème
-        Réponds uniquement avec la citation, sans guillemets ni introduction.
+        Tu dois créer UNE SEULE citation simple et pseudo-inspirante sur le thème exact : "\(theme)".
+
+        RÈGLES STRICTES :
+        - Citation courte, maximum 15 mots
+        - Langage simple et direct, sans métaphores complexes
+        - Pas de structure de phrase compliquée
+        - Pas de références à des "bâtisseurs" ou concepts abstraits
+        - Directement liée au thème "\(theme)" de manière concrète
+        - Ton motivant mais accessible
+        - TOUJOURS attribuer à "Sefer"
+
+        FORMATS OBLIGATOIRES (choisis-en UN au hasard) :
+        1. "Sefer dit que [citation simple]"
+        2. "Selon Sefer, [citation simple]"
+        3. "Comme le dit Sefer, [citation simple]"
+        4. "[citation simple], affirme Sefer"
+
+        EXEMPLES selon le thème :
+        - Sport : "Sefer dit que l'entraînement d'aujourd'hui fait le champion de demain"
+        - Travail : "Selon Sefer, chaque petite tâche accomplie nous rapproche du succès"
+        - Amour : "Comme le dit Sefer, aimer sincèrement c'est donner le meilleur de soi"
+        - Motivation : "La persévérance ouvre toutes les portes, affirme Sefer"
+
+        Réponds UNIQUEMENT avec la citation au format demandé, rien d'autre.
         """
     }
     
@@ -69,6 +87,27 @@ class MistralService: ObservableObject {
         } else {
             return "Thème général - adapte avec des métaphores concrètes et des références spécifiques au domaine mentionné"
         }
+    }
+    
+    private func cleanMarkdownText(_ text: String) -> String {
+        var cleanedText = text
+        
+        // Supprimer les balises markdown en gras **texte**
+        cleanedText = cleanedText.replacingOccurrences(of: "\\*\\*(.*?)\\*\\*", with: "$1", options: .regularExpression)
+        
+        // Supprimer les balises markdown en italique *texte*
+        cleanedText = cleanedText.replacingOccurrences(of: "\\*(.*?)\\*", with: "$1", options: .regularExpression)
+        
+        // Supprimer les guillemets doubles en début et fin
+        cleanedText = cleanedText.trimmingCharacters(in: CharacterSet(charactersIn: "\""))
+        
+        // Nettoyer les espaces multiples
+        cleanedText = cleanedText.replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
+        
+        // Nettoyer les espaces en début et fin
+        cleanedText = cleanedText.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        return cleanedText
     }
     
     private func callMistralAPI(prompt: String) async throws -> String {
@@ -138,7 +177,8 @@ class MistralService: ObservableObject {
                let firstChoice = choices.first,
                let message = firstChoice["message"] as? [String: Any],
                let content = message["content"] as? String {
-                return content.trimmingCharacters(in: .whitespacesAndNewlines)
+                let cleanedContent = cleanMarkdownText(content)
+                return cleanedContent
             } else {
                 throw MistralError.parsingError
             }
