@@ -6,7 +6,7 @@
 # ===========================
 FROM swift:5.9-jammy as build
 
-# Installation des dépendances système
+# Installation des dépendances système.
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
     && apt-get -q dist-upgrade -y\
